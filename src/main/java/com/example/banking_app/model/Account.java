@@ -27,6 +27,7 @@ public class Account {
     @Column(nullable = false)
     private String accountType;
 
+
     @Column(nullable = false)
     private String currency = "IDR";
 

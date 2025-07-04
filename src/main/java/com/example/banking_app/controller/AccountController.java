@@ -6,13 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.banking_app.model.Account;
-import com.example.banking_app.service.*;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.example.banking_app.service.AccountService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -80,8 +80,14 @@ public class AccountController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccount(id);
+    public String deleteAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            accountService.deleteAccount(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Account deleted");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting account: "+e.getMessage());
+        }
+
         return "redirect:/accounts";
     }
 

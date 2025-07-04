@@ -5,21 +5,18 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.example.banking_app.repository.AccountRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.example.banking_app.config.CurrencyConfig.CurrencyFormat;
 import com.example.banking_app.model.Account;
-
-import java.util.List;
-import java.util.Random;
-import java.util.Map;
+import com.example.banking_app.repository.AccountRepository;
 
 @Service
 public class AccountService {
@@ -32,10 +29,9 @@ public class AccountService {
             
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumFractionDigits(format.getDecimalDigits());
-            nf.setMaximumFractionDigits(format.getDecimalDigits());
+            nf.setMaximumFractionDigits(format.getDecimalDigits()); 
             
-            if (nf instanceof DecimalFormat) {
-                DecimalFormat df = (DecimalFormat) nf;
+            if (nf instanceof DecimalFormat df) {
                 df.setDecimalFormatSymbols(new DecimalFormatSymbols() {{
                     setDecimalSeparator(format.getDecimalSeparator().charAt(0));
                     setGroupingSeparator(format.getGroupingSeparator().charAt(0));
@@ -87,7 +83,12 @@ public class AccountService {
     }
 
     public void deleteAccount(Long id) {
-        accountRepository.deleteById(id);
+        Account account = accountRepository.findById(id).orElseThrow(()-> new RuntimeException("Account not found"));
+        if (account.getCurrency() == null) {
+            throw new IllegalStateException("Account Currency cannot be null");
+        }
+
+        accountRepository.delete(account);
     }
 
     public Account deposit(Long id, Double amount) {
