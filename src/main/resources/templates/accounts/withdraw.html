@@ -30,15 +30,20 @@
 
 
 <script>
-    function formatCurrencyInput(input) {
+function formatCurrencyInput(input) {
     const currency = input.dataset.currency;
-    let value = input.value.replace(/[^0-9]/g, '');
+    let value = input.value.replace(/[^0-9.]/g, '');
+    
+    // Store raw value in a data attribute
+    input.dataset.rawValue = value;
     
     if (currency === 'IDR') {
-        // Format as 1.000.000
-        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        // Format as 1.000.000 for display
+        const parts = value.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        value = parts.join('.');
     } else {
-        // Format as 1,000.00 for USD/EUR
+        // Format as 1,000.00 for USD/EUR display
         const parts = value.split('.');
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         value = parts.join('.');
@@ -46,4 +51,11 @@
     
     input.value = value;
 }
+
+// Modify form submission to send raw value
+document.querySelector('form').addEventListener('submit', function(e) {
+    const amountInput = this.querySelector('input[name="amount"]');
+    amountInput.value = amountInput.dataset.rawValue || 
+                       amountInput.value.replace(/[^0-9.]/g, '');
+});
 </script>
