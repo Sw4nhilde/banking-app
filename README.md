@@ -2,6 +2,10 @@
 
 A simple web-based banking application built with Spring Boot, Thymeleaf, and MySQL. This app allows users to manage bank accounts, including creating, editing, searching, depositing, and withdrawing funds.
 
+#Collaborators
+Nabilah Nuril Zahra M. Karim - nabilahnzmkarim15@gmail.com
+Nadia Fuspa Dewi - nadiapusfa@gmail.com
+
 ## Features
 
 - Create, view, edit, and delete bank accounts
